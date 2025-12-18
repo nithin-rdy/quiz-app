@@ -3,40 +3,38 @@ let currentIdx = 0;
 let score = 0;
 
 async function startQuiz() {
-    const key = document.getElementById('api-key').value;
     const topic = document.getElementById('topic').value;
 
-    if (!key || !topic) return alert("Please enter both API Key and Topic!");
+    if (!topic) return alert("Please enter a Topic!");
 
     // UI Transitions
     document.getElementById('setup-screen').classList.add('hidden');
     document.getElementById('quiz-screen').classList.remove('hidden');
 
     try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`, {
+        // We call our OWN backend here, which holds the secret key!
+        const response = await fetch('/api/generate', {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                contents: [{
-                    parts: [{
-                        text: `Generate 5 multiple choice questions about ${topic}. 
-                        Return ONLY a JSON array. Each object: {"question": "...", "options": ["a", "b", "c", "d"], "answer": "correct string"}. 
-                        No markdown, no explainers.`
-                    }]
-                }]
-            })
+            body: JSON.stringify({ topic: topic })
         });
 
         const data = await response.json();
-        const text = data.candidates[0].content.parts[0].text;
-        quizData = JSON.parse(text);
+        
+        // Check if the backend sent an error
+        if (data.error) {
+            throw new Error(data.error);
+        }
+
+        quizData = data; // Our backend already cleaned the data for us
 
         document.getElementById('loader').classList.add('hidden');
         document.getElementById('question-container').classList.remove('hidden');
         displayQuestion();
         
     } catch (err) {
-        alert("Failed to load quiz. Check your API key or Topic!");
+        console.error(err);
+        alert("AI is busy or topic was blocked. Try a different topic!");
         location.reload(); 
     }
 }
