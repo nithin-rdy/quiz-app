@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Quiz Generator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="card">
+        <div id="setup-screen">
+            <h1>🏏 AI Quiz Master</h1>
+            <p>Ready for Season 2? Practice your knowledge here.</p>
+            <input type="password" id="api-key" placeholder="Enter Gemini API Key">
+            <input type="text" id="topic" placeholder="Quiz Topic (e.g. Cricket Legends)">
+            <button id="start-btn" onclick="startQuiz()">Generate Quiz</button>
+        </div>
+
+        <div id="quiz-screen" class="hidden">
+            <div id="loader">Generating questions using AI...</div>
+            <div id="question-container" class="hidden">
+                <h2 id="question-text">Question goes here</h2>
+                <div id="options-list"></div>
+                <div id="status-bar">
+                    <span>Question: <span id="current-num">1</span>/5</span>
+                    <span>Score: <span id="score-count">0</span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
